@@ -1,0 +1,124 @@
+# Kickstart file
+
+install
+cdrom
+key --skip
+lang en_US.UTF-8
+keyboard us
+xconfig --startxonboot
+network --device eth0 --bootproto static --ip < ? > --netmask < ? >  --hostname localhost.localdomain
+rootpw --iscrypted < ? >
+firewall --enabled --port=22:tcp
+authconfig --enableshadow --enablemd5
+selinux --enforcing
+timezone America/New_York
+bootloader --location=mbr --driveorder=sda --append="rhgb quiet"
+# The following is the partition information you requested
+# Note that any partitions you deleted are not expressed
+# here so unless you clear all partitions first, this is
+# not guaranteed to work
+clearpart --all --drives=sda
+part /boot --fstype ext3 --size=100 --ondisk=sda
+part pv.2 --size=0 --grow --ondisk=sda
+volgroup VolGroup00 --pesize=32768 pv.2
+logvol / --fstype ext3 --name=LogVol00 --vgname=VolGroup00 --size=1024 --grow
+logvol swap --fstype swap --name=LogVol01 --vgname=VolGroup00 --size=1000 --grow --maxsize=9984
+
+%packages
+@admin-tools
+@base
+@core
+@development-libs
+@development-tools
+@dialup
+@editors
+@ftp-server
+@gnome-desktop
+@gnome-software-development
+@games
+@graphical-internet
+@graphics
+@java
+@java-development
+@legacy-software-support
+@mysql
+@office
+@printing
+@server-cfg
+@sound-and-video
+@system-tools
+@text-internet
+@web-server
+@x-software-development
+@base-x
+kexec-tools
+iscsi-initiator-utils
+fipscheck
+device-mapper-multipath
+sgpio
+perl-Convert-ASN1
+python-dmidecode
+imake
+emacs
+xferstats
+libsane-hpaio
+bsh-demo
+mysql-devel
+qt-MySQL
+mysql-bench
+mod_auth_mysql
+mysql-connector-odbc64
+php-mysql
+system-config-bind
+system-switch-mail-gnome
+system-config-boot
+arpwatch
+iotop
+rdesktop
+watchdog
+wireshark-gnome
+tog-pegasus
+lsscsi
+uucp
+dtach
+tsclient
+e4fsprogs
+gnutls-utils
+lslk
+hwbrowser
+uuidd
+createrepo
+pinentry
+blktrace
+mtx
+nmap-frontend
+tn5250
+audit
+ktune
+mrtg
+net-snmp-utils
+mc
+sblim-gather
+sblim-wbemcli
+sysstat
+gnome-nettool
+iptraf
+mt-st
+vlock
+dstat
+php-odbc
+tomcat5-admin-webapps
+php-pear
+tomcat5-webapps
+mod_nss
+mod_auth_pgsql
+mod_auth_mysql
+mod_authz_ldap
+tomcat5
+php-mysql
+php-pgsql
+mod_revocator
+mesa-libGLU-devel
+xorg-x11-utils
+xorg-x11-server-Xnest
+xorg-x11-server-Xvfb
