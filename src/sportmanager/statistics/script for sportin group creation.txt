@@ -1,6 +1,6 @@
 #!bin/bash
 
-echo -n "Enter group name: "
+echo -n "Enter group name:sportin"
 read group_name
 
 sportin=$(cat /etc/group | awk -F: '{ print $1 }' | grep $sportin)
