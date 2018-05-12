@@ -1,4 +1,4 @@
-package sportmanager.salesRep;
+package sportmanager.sales;
 
 import java.util.HashMap;
 import java.util.Map;
