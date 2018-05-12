@@ -45,7 +45,12 @@
 			<artifactId>spring-web</artifactId>
 			<version>4.3.9.RELEASE</version>
 		</dependency>
- 
+                </dependency>
+		<dependency>
+			<groupId>com.ibm</groupId>
+			<artifactId>com.ibm.mqetclient</artifactId>
+			<version>5.3.07</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
