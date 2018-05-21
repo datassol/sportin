@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+    <db:generic-config name="Generic_Database_Configuration" dataSource-ref="Bean" doc:name="Generic Database Configuration"/>
+    <spring:beans>
+        <spring:bean id="Bean" name="Bean"/>
+    </spring:beans>
+    <flow name="sportsin-analytics-dataFlow">
+        <file:inbound-endpoint path="/desktop" responseTimeout="10000" doc:name="Incoming Sport data file"/>
+        <set-variable variableName="OriginalFilename" value="#[message.inboundProperties.originalFilename]" doc:name="Lock the Incoming File Name"/>
+        <logger message="#[payload]" level="INFO" doc:name="To check the payload"/>
+        <dw:transform-message doc:name="Mapping">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/csv 
+---
+{
+	Statistics: $.payload,
+	Performance : $.payload,
+	"Previous Year Records" : $.payload,
+	Improvements : $.payload,
+	"fan poll percentage" : $.payload
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger level="INFO" doc:name="To log the Output"/>
+        <db:insert config-ref="Generic_Database_Configuration" doc:name="Database">
+            <db:parameterized-query/>
+        </db:insert>
+        <flow-ref name="emailSourceFile" doc:name="emailSourceFile"/>
+
+    </flow>
+      <flow name="emailSourceFile">
+        <set-payload value="#[payload]" doc:name="Set Payload"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <set-attachment attachmentName="#[flowVars.originalFileName]" value="#[payload]" contentType="text/csv" doc:name="Attachment"/>
+        <set-payload value="#['SportIn File processed ' + server.dateTime.toDate()]" doc:name="Set Payload"/>
+        <smtp:outbound-endpoint host="smtp.principal.com" to="${email.source.to}" from="${email.error.from}" subject="[${envir}]" responseTimeout="10000" doc:name="SMTP"/>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <logger message="${app.name} - #[flowVars.uuid] - Failure sending source file" level="INFO" doc:name="Logger"/>
+        </catch-exception-strategy>
+    </flow>
+
+</mule>
