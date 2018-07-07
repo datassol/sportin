@@ -1,0 +1,55 @@
+@CHARSET "ISO-8859-1";
+
+body {
+	background-image: url("Images/abstract.jpg");
+}
+
+.headstyle {
+	font-size: 90%;
+	style ="width: 850px;
+	border: 5px;
+	padding: 5px;
+	margin: 5px;
+	background-color: navy;
+	border-radius: 20px;
+}
+
+.left {
+	text-align: center;
+	background-color: white;
+	float: left;
+	width: 66.5%;
+	height: 300px;
+	padding: 10px;
+	border-radius: 20px;
+	float: left;
+}
+
+.right {
+	font-family: Arial;
+	float: right;
+	width: 28%;
+	height: 300px;
+	padding: 10px;
+	border-radius: 20px;
+}
+
+.divstyle {
+	background-color: powderblue;
+	width: 90%;
+	padding: 5px;
+	font-size: 18px;
+	border: 1px dashed green;
+	border-radius: 20px;
+}
+
+.bottomright {
+	text-align: left;
+	background-color: orange;
+	width: 90%;
+	font-size: 18px;
+	border: 1px dashed green;
+	border-radius: 20px;
+	padding: 5px;
+	background-color: orange;
+}

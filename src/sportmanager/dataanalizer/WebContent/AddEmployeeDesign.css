@@ -1,0 +1,50 @@
+@CHARSET "ISO-8859-1";
+
+body {
+	width: 740px;
+	height: 500px;
+	border: 1px dashed green;
+	border-radius: 30px;
+	padding:10px;
+	background-image:url("Images/abstract.jpg");
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.center {
+	float: center;
+}
+
+
+
+.topdiv {
+	background-color:cyan;
+	font-size: 18px;
+	border: 1px dashed green;
+	border-radius: 20px;
+	padding: 5px;
+}
+
+.divbottom {
+	background-color:cyan;
+	width: 80%;
+	font-size: 18px;
+	border: 1px dashed green;
+	border-radius: 20px;
+	padding: 5px;
+}
+
+.divtop {
+	background-color:cyan;
+	width: 80%;
+	font-size: 18px;
+	border: 1px dashed green;
+	border-radius: 20px;
+	padding: 5px;
+}
