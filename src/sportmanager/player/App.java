@@ -1,4 +1,4 @@
-package enums;
+package sportmanager.player;
 
 public class App {
 	

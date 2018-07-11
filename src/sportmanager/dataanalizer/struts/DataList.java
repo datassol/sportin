@@ -1,4 +1,4 @@
-package com.struts.login;
+package sportmanager.dataanalizer.struts;
 
 import org.apache.struts.action.ActionForm;
 
