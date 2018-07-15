@@ -1,4 +1,4 @@
-package com.struts.Action;
+package sportmanager.dataanalizer.struts;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,7 +8,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.struts.login.DataList;
 
 public class LoginAction extends Action {
 	public final static String SUCCESS = "success";
