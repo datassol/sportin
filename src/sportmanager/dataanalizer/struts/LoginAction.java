@@ -18,6 +18,7 @@ public class LoginAction extends Action {
 
 		DataList data = (DataList) form;
 		if ("vamsee".equalsIgnoreCase(data.getUsername()) || "krishna".equalsIgnoreCase(data.getPassword())) {
+			System.out.println("Username is"+  data.getUsername());
 			return mapping.findForward(SUCCESS);
 		} else {
 			return mapping.findForward(FAIL);
