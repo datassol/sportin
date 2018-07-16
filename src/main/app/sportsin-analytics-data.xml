@@ -10,14 +10,17 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
 http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
-    <db:generic-config name="Generic_Database_Configuration" dataSource-ref="Bean" doc:name="Generic Database Configuration"/>
-    <spring:beans>
+    
+	<db:generic-config name="Generic_Database_Configuration" dataSource-ref="Bean" doc:name="Generic Database Configuration"/>
+    
+	<spring:beans>
         <spring:bean id="Bean" name="Bean"/>
     </spring:beans>
-    <flow name="sportsin-analytics-dataFlow">
+    
+	<flow name="sportsin-analytics-dataFlow">
         <file:inbound-endpoint path="/desktop" responseTimeout="10000" doc:name="Incoming Sport data file"/>
         <set-variable variableName="OriginalFilename" value="#[message.inboundProperties.originalFilename]" doc:name="Lock the Incoming File Name"/>
-        <logger message="#[payload]" level="INFO" doc:name="To check the payload"/>
+        <logger message="Step-1 #[payload]" category="com.datassol.sportin" level="DEBUG" doc:name="To check the payload"/>
         <dw:transform-message doc:name="Mapping">
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/csv 
@@ -30,14 +33,14 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 	"fan poll percentage" : $.payload
 }]]></dw:set-payload>
         </dw:transform-message>
-        <logger level="INFO" doc:name="To log the Output"/>
+        <logger message="Step-2 #[payload]" category="com.datassol.sportin" level="DEBUG" doc:name="To log the Output"/>
         <db:insert config-ref="Generic_Database_Configuration" doc:name="Database">
             <db:parameterized-query/>
         </db:insert>
         <flow-ref name="emailSourceFile" doc:name="emailSourceFile"/>
-
-    </flow>
-      <flow name="emailSourceFile">
+	</flow>
+	
+    <flow name="emailSourceFile">
         <set-payload value="#[payload]" doc:name="Set Payload"/>
         <object-to-string-transformer doc:name="Object to String"/>
         <set-attachment attachmentName="#[flowVars.originalFileName]" value="#[payload]" contentType="text/csv" doc:name="Attachment"/>
