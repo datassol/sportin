@@ -31,6 +31,12 @@
 
         <!-- Apache Commons tend to make a lot of noise which can clutter the log-->
         <AsyncLogger name="org.apache" level="WARN"/>
+	    
+	<!-- CXF is used heavily by Mule for web services -->
+        <AsyncLogger name="org.apache.cxf" level="AUDIT"/>
+
+        <!-- Apache Commons tend to make a lot of noise which can clutter the log-->
+        <AsyncLogger name="org.apache" level="AUDIT"/>
 
         <!-- Reduce startup noise -->
         <AsyncLogger name="org.springframework.beans.factory" level="WARN"/>
