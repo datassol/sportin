@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="9246" doc:name="HTTP Listener Configuration"/>
+    <file:connector name="File" autoDelete="false" streaming="true" validateConnections="true" doc:name="File"/>
+    <file:connector name="File1" autoDelete="false" streaming="true" validateConnections="true" doc:name="File"/>
+    <flow name="remove-duplicates-from-fileFlow1">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/removeDups" doc:name="HTTP"/>
+        <flow-ref name="remove-duplicates-from-fileFlow" doc:name="Flow Reference"/>
+    </flow>
+    <flow name="remove-duplicates-from-fileFlow">
+        <file:inbound-endpoint path="C:\Users\prc3108\Desktop\new\sample" connector-ref="File1" pollingFrequency="100000" responseTimeout="10000" doc:name="File"/>
+        <logger message="&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot; " level="INFO" doc:name="Logger"/>
+        <dw:transform-message doc:name="Transform Message" metadata:id="a2ce27af-1a60-4098-8a45-193666197ab1">
+            <dw:input-payload mimeType="application/csv"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	root: {
+		details: payload map ((payload01 , indexOfPayload01) -> {
+			a: payload01.a,
+			b: payload01.b,
+			c: payload01.c,
+			d: payload01.d
+		})
+	}  
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+        <echo-component doc:name="Echo"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload]]></dw:set-payload>
+        </dw:transform-message>
+      <!--   <expression-component doc:name="Expression"><![CDATA[import java.io.BufferedReader;
+ System.out.println("in java code1");
+String csvFile = payload;
+ System.out.println("in java code2");
+    BufferedReader br = null;
+    String line = "";
+    HashSet<String> lines = new HashSet<>();
+    try {
+        br = new BufferedReader(new FileReader(csvFile));
+        while ((line = br.readLine()) != null) {
+            if (lines.add(line)) {
+                System.out.println(line);
+            }
+        }
+
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        e.printStackTrace();
+    } finally {
+        if (br != null) {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+flowVars.filtered = line;]]></expression-component> -->
+       <!--  <set-payload value="#['{	&quot;root&quot;:	{		&quot;details&quot;:		[			{				&quot;a&quot;: &quot;first name&quot;,		        &quot;b&quot;: &quot;last name&quot;,		        &quot;c&quot;: &quot;address&quot;,		        &quot;d&quot;: &quot;phone number&quot;			},			{				&quot;a&quot;: &quot;first name&quot;,		        &quot;b&quot;: &quot;last name&quot;,		        &quot;c&quot;: &quot;address&quot;,		        &quot;d&quot;: &quot;phone number&quot;			},			{				&quot;a&quot;: &quot;a&quot;,		        &quot;b&quot;: &quot;b&quot;,		        &quot;c&quot;: &quot;c&quot;,		        &quot;d&quot;: &quot;d&quot;			}					]  	} }']" mimeType="text/json" doc:name="Set Payload"/> -->
+
+    </flow>
+</mule>
