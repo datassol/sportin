@@ -1,35 +1,62 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Configuration>
-    <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%-5p %d [%t] %c: %m%n"/>
-        </Console>
-    </Appenders>
+    <Properties>
+        <Property name="app_name">sportin</Property>
+        <Property name="log.location">${sys:mule.home}${sys:file.separator}logs${sys:file.separator}</Property>
+        <Property name="additivity">true</Property>
+    </Properties>
+	<Appenders>
+		<RollingFile name="file" fileName="${sys:log.location}${app_name}.log"
+			filePattern="${sys:log.location}${app_name}-%i.log">
+			<PatternLayout pattern="%d %-5p - %m%X{eaiRecordDescriptor}%n" />
+			<SizeBasedTriggeringPolicy size="20 MB" />
+			<DefaultRolloverStrategy max="10" />
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<!-- Apache Commons tend to make a lot of noise which can clutter the log -->
+		<AsyncLogger name="org.apache" level="WARN" />
 
-    <Loggers>
+		<!-- Reduce startup noise -->
+		<AsyncLogger name="org.springframework.beans.factory"
+			level="WARN" />
 
-        <!-- CXF is used heavily by Mule for web services -->
-        <AsyncLogger name="org.apache.cxf" level="WARN"/>
+		<!-- Mule classes -->
+		<AsyncLogger name="org.mule" level="INFO" />
+		<AsyncLogger name="com.mulesoft" level="INFO" />
 
-        <!-- Apache Commons tend to make a lot of noise which can clutter the log-->
-        <AsyncLogger name="org.apache" level="WARN"/>
+		<!-- Reduce DM verbosity -->
+		<AsyncLogger name="org.jetel" level="WARN" />
+		<AsyncLogger name="Tracking" level="WARN" />
 
-        <!-- Reduce startup noise -->
-        <AsyncLogger name="org.springframework.beans.factory" level="WARN"/>
+		<AsyncLogger
+			name="org.springframework.core.io.support.PropertiesLoaderSupport"
+			level="DEBUG" />
 
-        <!-- Mule classes -->
-        <AsyncLogger name="org.mule" level="INFO"/>
-        <AsyncLogger name="com.mulesoft" level="INFO"/>
+		<!-- Logs all SOAP input/output payloads -->
+		<AsyncLogger name="org.apache.cxf"
+			level="${sys:log4j.sportin.http.log.level:-INFO}"
+			additivity="${sys:additivity:-true}">
+			<AppenderRef ref="file" />
+		</AsyncLogger>
 
-        <!-- Reduce DM verbosity -->
-        <AsyncLogger name="org.jetel" level="WARN"/>
-        <AsyncLogger name="Tracking" level="WARN"/>
-        
-        <!--AsyncLogger name="httpclient.wire" level="ALL" /-->
+		<!-- Logs HTTP input and output data -->
+		<AsyncLogger name="org.mule.module.http.internal.HttpMessageLogger"
+			level="${sys:log4j.sportin.http.log.level:-DEBUG}"
+			additivity="${sys:additivity:-true}">
+			<AppenderRef ref="file" />
+		</AsyncLogger>
 
-        <AsyncRoot level="INFO">
-            <AppenderRef ref="Console"/>
-        </AsyncRoot>
-    </Loggers>
+		<AsyncLogger name="com.ning.http"
+			level="${sys:log4j.sportin.http.log.level:-DEBUG}"
+			additivity="${sys:additivity:-true}">
+			<AppenderRef ref="file" />
+		</AsyncLogger>
 
+		<AsyncLogger name="${app_name}"
+			level="${sys:log4j.sportin.app.log.level:-TRACE}"
+			additivity="${sys:additivity:-true}">
+			<AppenderRef ref="file" />
+		</AsyncLogger>
+	</Loggers>
 </Configuration>
